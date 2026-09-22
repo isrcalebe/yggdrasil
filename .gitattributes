@@ -1,0 +1,10 @@
+# Autodetect text files and ensure that we normalise their
+# line endings to lf internally. When checked out they may
+# use different line endings.
+* text=auto
+
+# Check out with LF (UNIX) line endings
+*.sh text eol=lf
+.gitignore text eol=lf
+.gitattributes text eol=lf
+*.md text eol=lf
