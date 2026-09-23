@@ -1,38 +1,54 @@
-var builder = WebApplication.CreateBuilder(args);
+using System.Globalization;
+using Serilog;
+using yggdrasil.PublicApis.Extensions.EndpointRouteBuilderExtensions;
+using yggdrasil.PublicApis.Extensions.ServiceCollectionExtensions;
+using yggdrasil.PublicApis.Extensions.WebApplicationExtensions;
 
-builder.Services.AddOpenApi();
+Log.Logger = new LoggerConfiguration()
+    .WriteTo.Console(formatProvider: CultureInfo.InvariantCulture)
+    .CreateLogger();
 
-var app = builder.Build();
-
-if (app.Environment.IsDevelopment())
+try
 {
-    app.MapOpenApi();
+    await WebApplication
+        .CreateSlimBuilder(args)
+        .UseComponents((webHost, configuration, services, environment, logging) =>
+        {
+            webHost.UseKestrelHttpsConfiguration();
+
+            services
+                .UseRouting()
+                .UseCommon()
+                .UseOpenApi()
+                .UseHealthChecks()
+                .UseLogging();
+        })
+        .UsePipelines((application, configuration, services, environment) =>
+        {
+            application.UseExceptionHandler();
+
+            if (!environment.IsDevelopment())
+                application.UseHsts();
+
+            application
+                .UseSerilogRequestLogging()
+                .UseResponseCompression()
+                .UseRouting()
+                .UseOutputCache()
+                .UseEndpoints(endpoints =>
+                {
+                    endpoints
+                        .MapHealthCheckRoutes()
+                        .MapOpenApi(environment);
+                });
+        })
+        .RunAsync();
 }
-
-app.UseHttpsRedirection();
-
-var summaries = new[]
+catch (Exception exception) when (exception is not HostAbortedException)
 {
-    "Freezing", "Bracing", "Chilly", "Cool", "Mild", "Warm", "Balmy", "Hot", "Sweltering", "Scorching"
-};
-
-app.MapGet("/weatherforecast", () =>
+    Log.Fatal(exception, "Application terminated unexpectedly");
+}
+finally
 {
-    var forecast = Enumerable.Range(1, 5).Select(index =>
-        new WeatherForecast
-        (
-            DateOnly.FromDateTime(DateTime.Now.AddDays(index)),
-            Random.Shared.Next(-20, 55),
-            summaries[Random.Shared.Next(summaries.Length)]
-        ))
-        .ToArray();
-    return forecast;
-})
-.WithName("GetWeatherForecast");
-
-app.Run();
-
-internal record WeatherForecast(DateOnly Date, int TemperatureC, string? Summary)
-{
-    public int TemperatureF => 32 + (int)(TemperatureC / 0.5556);
+    await Log.CloseAndFlushAsync();
 }

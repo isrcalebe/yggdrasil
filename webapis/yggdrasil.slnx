@@ -2,6 +2,8 @@
   <Folder Name="/Additional Items/">
     <File Path="Directory.Build.props" />
     <File Path="Directory.Packages.props" />
+    <File Path="global.json" />
   </Folder>
   <Project Path="publicapis/yggdrasil.PublicApis.csproj" />
+  <Project Path="tests/publicapis/yggdrasil.PublicApis.Tests.csproj" />
 </Solution>
