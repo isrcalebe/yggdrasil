@@ -11,6 +11,7 @@
     <ProjectReference Include="..\..\buildingblocks\persistence\yggdrasil.Persistence.csproj" />
   </ItemGroup>
   <ItemGroup Label="Package References">
+    <PackageReference Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore" />
     <PackageReference Include="Microsoft.AspNetCore.Mvc.Testing" />
     <PackageReference Include="Respawn" />
     <PackageReference Include="Testcontainers.PostgreSql" />
