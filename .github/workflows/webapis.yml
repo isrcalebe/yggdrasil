@@ -1,0 +1,68 @@
+name: webapis
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - "webapis/**"
+      - "compose.yaml"
+      - ".github/workflows/webapis.yml"
+  pull_request:
+    paths:
+      - "webapis/**"
+      - "compose.yaml"
+      - ".github/workflows/webapis.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
+
+defaults:
+  run:
+    working-directory: webapis
+
+env:
+  DOTNET_NOLOGO: true
+  DOTNET_CLI_TELEMETRY_OPTOUT: true
+  NUGET_PACKAGES: ${{ github.workspace }}/.nuget/packages
+
+jobs:
+  build:
+    name: Build and test
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+
+    steps:
+      - uses: actions/checkout@v7
+
+      - uses: actions/setup-dotnet@v6
+        with:
+          global-json-file: webapis/global.json
+
+      - uses: actions/cache@v6
+        with:
+          path: ${{ env.NUGET_PACKAGES }}
+          key: nuget-${{ runner.os }}-${{ hashFiles('webapis/Directory.Packages.props', 'webapis/**/*.csproj') }}
+          restore-keys: nuget-${{ runner.os }}-
+
+      - name: Restore
+        run: dotnet restore yggdrasil.slnx
+
+      - name: Check formatting
+        run: dotnet format whitespace yggdrasil.slnx --no-restore --verify-no-changes
+
+      - name: Build
+        run: dotnet build yggdrasil.slnx --no-restore --configuration Release
+
+      - name: Architecture tests
+        run: dotnet test --project tests/architecture --no-build --configuration Release
+
+      - name: Host tests
+        run: dotnet test --project tests/publicapis --no-build --configuration Release
+
+      - name: Integration tests
+        run: dotnet test --project tests/integration --no-build --configuration Release
