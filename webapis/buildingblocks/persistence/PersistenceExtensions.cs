@@ -18,7 +18,7 @@ public static class PersistenceExtensions
         /// migrations history, plus a readiness health check and (opt-in) migrations on startup.
         /// </summary>
         public IServiceCollection AddModuleDbContext<TContext>()
-            where TContext : ModuleDbContext<TContext>, IModuleDbContext
+            where TContext : DbContext, IModuleDbContext
         {
             // Resolved lazily so configuration overrides applied after registration (e.g. tests) are honored.
             self.AddDbContext<TContext>(static (services, options) =>
