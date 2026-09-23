@@ -1,0 +1,13 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+  <ItemGroup Label="Framework References">
+    <FrameworkReference Include="Microsoft.AspNetCore.App" />
+  </ItemGroup>
+  <ItemGroup Label="Project References">
+    <ProjectReference Include="..\..\..\buildingblocks\persistence\yggdrasil.Persistence.csproj" />
+    <ProjectReference Include="..\..\..\buildingblocks\web\yggdrasil.Web.csproj" />
+    <ProjectReference Include="..\yggdrasil.Modules.Identity.Contracts\yggdrasil.Modules.Identity.Contracts.csproj" />
+  </ItemGroup>
+  <ItemGroup Label="Package References">
+    <PackageReference Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore" />
+  </ItemGroup>
+</Project>
