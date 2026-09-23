@@ -17,6 +17,11 @@ public sealed class IdentityModule : IModule
 
     public void ConfigureServices(IServiceCollection services, IConfiguration configuration)
     {
+        services.AddModuleDbContext<IdentityModuleDbContext>();
+
+        services.AddIdentityCore<Account>()
+            .AddRoles<IdentityRole<Guid>>()
+            .AddEntityFrameworkStores<IdentityModuleDbContext>();
     }
 
     public void MapEndpoints(IEndpointRouteBuilder endpoints)
