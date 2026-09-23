@@ -34,6 +34,20 @@ public sealed class HostTests(IntegrationFactory factory) : IntegrationTest(fact
         }
     }
 
+    [Fact]
+    public async Task ModuleDbContextUseTheirSchema()
+    {
+        await using var scope = Factory.Services.CreateAsyncScope();
+
+        foreach (var contextType in moduleDbContextTypes())
+        {
+            var context = (DbContext)scope.ServiceProvider.GetRequiredService(contextType);
+            var schema = (string)contextType.GetProperty(nameof(IModuleDbContext.Schema))!.GetValue(null)!;
+
+            Assert.All(context.Model.GetEntityTypes(), entity => Assert.Equal(schema, entity.GetSchema()));
+        }
+    }
+
     private static IEnumerable<Type> moduleDbContextTypes()
         => Directory
             .GetFiles(AppContext.BaseDirectory, "yggdrasil.Modules.*.dll")
