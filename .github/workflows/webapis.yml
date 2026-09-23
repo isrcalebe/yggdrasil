@@ -2,7 +2,7 @@ name: webapis
 
 on:
   push:
-    branches: [main]
+    branches: [main, develop]
     paths:
       - "webapis/**"
       - "compose.yaml"
