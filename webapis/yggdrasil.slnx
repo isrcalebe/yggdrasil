@@ -13,6 +13,7 @@
   <Folder Name="/Modules/" />
   <Folder Name="/Tests/">
     <Project Path="tests/architecture/yggdrasil.Architecture.Tests.csproj" />
+    <Project Path="tests/integration/yggdrasil.Integration.Tests.csproj" />
     <Project Path="tests/publicapis/yggdrasil.PublicApis.Tests.csproj" />
   </Folder>
   <Project Path="publicapis/yggdrasil.PublicApis.csproj" />

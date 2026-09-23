@@ -1,0 +1,22 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+  <!-- Runs the host against a real PostgreSQL started with Testcontainers: Docker must be running. -->
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <IsPackable>false</IsPackable>
+    <IsTestProject>true</IsTestProject>
+  </PropertyGroup>
+  <ItemGroup Label="Project References">
+    <!-- The host references every module, so all module assemblies land in the output directory. -->
+    <ProjectReference Include="..\..\publicapis\yggdrasil.PublicApis.csproj" />
+    <ProjectReference Include="..\..\buildingblocks\persistence\yggdrasil.Persistence.csproj" />
+  </ItemGroup>
+  <ItemGroup Label="Package References">
+    <PackageReference Include="Microsoft.AspNetCore.Mvc.Testing" />
+    <PackageReference Include="Respawn" />
+    <PackageReference Include="Testcontainers.PostgreSql" />
+    <PackageReference Include="xunit.v3" />
+  </ItemGroup>
+  <ItemGroup Label="Global Usings">
+    <Using Include="Xunit" />
+  </ItemGroup>
+</Project>
