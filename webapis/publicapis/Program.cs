@@ -3,6 +3,7 @@ using Serilog;
 using yggdrasil.PublicApis.Extensions.EndpointRouteBuilderExtensions;
 using yggdrasil.PublicApis.Extensions.ServiceCollectionExtensions;
 using yggdrasil.PublicApis.Extensions.WebApplicationExtensions;
+using yggdrasil.Web.Modules;
 
 Log.Logger = new LoggerConfiguration()
     .WriteTo.Console(formatProvider: CultureInfo.InvariantCulture)
@@ -11,35 +12,39 @@ Log.Logger = new LoggerConfiguration()
 try
 {
     await WebApplication
-        .CreateSlimBuilder(args)
+        .CreateBuilder(args)
         .UseComponents((webHost, configuration, services, environment, logging) =>
         {
-            webHost.UseKestrelHttpsConfiguration();
-
             services
                 .UseRouting()
                 .UseCommon()
+                .UseMediator()
                 .UseOpenApi()
                 .UseHealthChecks()
                 .UseLogging();
+
+            services.AddModules(configuration);
         })
         .UsePipelines((application, configuration, services, environment) =>
         {
-            application.UseExceptionHandler();
+            application
+                .UseSerilogRequestLogging(options => options.Logger = services.GetRequiredService<Serilog.ILogger>())
+                .UseExceptionHandler();
 
             if (!environment.IsDevelopment())
                 application.UseHsts();
 
             application
-                .UseSerilogRequestLogging()
                 .UseResponseCompression()
                 .UseRouting()
+                .UseModules()
                 .UseOutputCache()
                 .UseEndpoints(endpoints =>
                 {
                     endpoints
                         .MapHealthCheckRoutes()
-                        .MapOpenApi(environment);
+                        .MapOpenApi(environment)
+                        .MapModules();
                 });
         })
         .RunAsync();
@@ -47,6 +52,8 @@ try
 catch (Exception exception) when (exception is not HostAbortedException)
 {
     Log.Fatal(exception, "Application terminated unexpectedly");
+
+    throw;
 }
 finally
 {

@@ -1,9 +1,18 @@
 ﻿<Solution>
   <Folder Name="/Additional Items/">
+    <File Path="../compose.yaml" />
     <File Path="Directory.Build.props" />
     <File Path="Directory.Packages.props" />
     <File Path="global.json" />
   </Folder>
+  <Folder Name="/Building Blocks/">
+    <Project Path="buildingblocks/core/yggdrasil.Core.csproj" />
+    <Project Path="buildingblocks/persistence/yggdrasil.Persistence.csproj" />
+    <Project Path="buildingblocks/web/yggdrasil.Web.csproj" />
+  </Folder>
+  <Folder Name="/Modules/" />
+  <Folder Name="/Tests/">
+    <Project Path="tests/publicapis/yggdrasil.PublicApis.Tests.csproj" />
+  </Folder>
   <Project Path="publicapis/yggdrasil.PublicApis.csproj" />
-  <Project Path="tests/publicapis/yggdrasil.PublicApis.Tests.csproj" />
 </Solution>

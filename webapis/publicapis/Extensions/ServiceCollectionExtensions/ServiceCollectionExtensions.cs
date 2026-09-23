@@ -1,3 +1,4 @@
+using Mediator;
 using Microsoft.Extensions.Diagnostics.HealthChecks;
 using Serilog;
 using Serilog.Debugging;
@@ -5,7 +6,10 @@ using Serilog.Exceptions;
 using Serilog.Formatting.Compact;
 using Serilog.Templates;
 using Serilog.Templates.Themes;
-using yggdrasil.PublicApis.HealthChecks;
+using yggdrasil.Core.HealthChecks;
+using yggdrasil.Web.Behaviors;
+using yggdrasil.Web.Exceptions;
+using yggdrasil.Web.Versioning;
 
 namespace yggdrasil.PublicApis.Extensions.ServiceCollectionExtensions;
 
@@ -15,8 +19,17 @@ public static class ServiceCollectionExtensions
     {
         public IServiceCollection UseCommon()
             => self
+                .AddSingleton(TimeProvider.System)
+                .AddExceptionHandler<ValidationExceptionHandler>()
                 .AddOutputCache()
                 .AddResponseCompression();
+
+        public IServiceCollection UseMediator()
+            => self.AddMediator(static options =>
+            {
+                options.ServiceLifetime = ServiceLifetime.Scoped;
+                options.PipelineBehaviors = [typeof(LoggingBehavior<,>), typeof(ValidationBehavior<,>)];
+            });
 
         public IServiceCollection UseOpenApi()
             => self.AddOpenApi();
@@ -32,6 +45,7 @@ public static class ServiceCollectionExtensions
         public IServiceCollection UseRouting()
             => self
                 .AddRouting(static options => options.LowercaseUrls = true)
+                .AddApiVersioningDefaults()
                 .AddProblemDetails(static options => options.CustomizeProblemDetails = static context =>
                 {
                     var environment = context.HttpContext.RequestServices.GetRequiredService<IHostEnvironment>();

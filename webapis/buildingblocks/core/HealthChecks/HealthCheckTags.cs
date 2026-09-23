@@ -1,4 +1,4 @@
-namespace yggdrasil.PublicApis.HealthChecks;
+namespace yggdrasil.Core.HealthChecks;
 
 public static class HealthCheckTags
 {

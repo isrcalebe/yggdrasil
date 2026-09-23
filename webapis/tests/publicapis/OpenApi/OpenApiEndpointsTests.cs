@@ -1,11 +1,10 @@
 using System.Net;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.Mvc.Testing;
 
 namespace yggdrasil.PublicApis.Tests.OpenApi;
 
-public sealed class OpenApiEndpointsTests(WebApplicationFactory<Program> factory)
-    : IClassFixture<WebApplicationFactory<Program>>
+public sealed class OpenApiEndpointsTests(PublicApisFactory factory)
+    : IClassFixture<PublicApisFactory>
 {
     [Theory]
     [InlineData("/openapi/v1.json")]

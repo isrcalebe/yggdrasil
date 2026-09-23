@@ -1,6 +1,6 @@
 using Microsoft.AspNetCore.Diagnostics.HealthChecks;
 using Scalar.AspNetCore;
-using yggdrasil.PublicApis.HealthChecks;
+using yggdrasil.Core.HealthChecks;
 
 namespace yggdrasil.PublicApis.Extensions.EndpointRouteBuilderExtensions;
 
