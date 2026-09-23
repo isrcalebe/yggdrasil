@@ -10,7 +10,10 @@
     <Project Path="buildingblocks/persistence/yggdrasil.Persistence.csproj" />
     <Project Path="buildingblocks/web/yggdrasil.Web.csproj" />
   </Folder>
-  <Folder Name="/Modules/" />
+  <Folder Name="/Modules/">
+    <Project Path="modules/identity/contracts/yggdrasil.Modules.Identity.Contracts.csproj" />
+    <Project Path="modules/identity/module/yggdrasil.Modules.Identity.csproj" />
+  </Folder>
   <Folder Name="/Tests/">
     <Project Path="tests/architecture/yggdrasil.Architecture.Tests.csproj" />
     <Project Path="tests/integration/yggdrasil.Integration.Tests.csproj" />

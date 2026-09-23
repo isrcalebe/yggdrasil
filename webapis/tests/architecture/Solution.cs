@@ -48,7 +48,8 @@ internal static class Solution
                 Path.GetFileNameWithoutExtension(path),
                 [.. XDocument.Load(path)
                     .Descendants("ProjectReference")
-                    .Select(static reference => Path.GetFileNameWithoutExtension((string?)reference.Attribute("Include") ?? string.Empty))]))];
+                    // MSBuild paths use '\', which is not a directory separator on Linux: normalize it first.
+                    .Select(static reference => Path.GetFileNameWithoutExtension(((string?)reference.Attribute("Include") ?? string.Empty).Replace('\\', '/')))]))];
     }
 
     private static Assembly[] loadAssemblies(bool contracts)

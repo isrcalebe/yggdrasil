@@ -1,5 +1,6 @@
 using System.Globalization;
 using Serilog;
+using yggdrasil.Modules.Identity;
 using yggdrasil.PublicApis.Extensions.EndpointRouteBuilderExtensions;
 using yggdrasil.PublicApis.Extensions.ServiceCollectionExtensions;
 using yggdrasil.PublicApis.Extensions.WebApplicationExtensions;
@@ -23,7 +24,8 @@ try
                 .UseHealthChecks()
                 .UseLogging();
 
-            services.AddModules(configuration);
+            services.AddModules(configuration,
+                new IdentityModule());
         })
         .UsePipelines((application, configuration, services, environment) =>
         {
