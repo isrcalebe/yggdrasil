@@ -114,13 +114,15 @@ public sealed class AccountRegistrationTests(IntegrationFactory factory) : Integ
                 .Select(_ => Client.PostAsJsonAsync(accounts, command, CancellationToken))
         );
 
-        Assert.Single(responses, static response => response.StatusCode == HttpStatusCode.Created);
-        Assert.All(responses.Where(static response => response.StatusCode != HttpStatusCode.Created),
-            static response => Assert.Equal(HttpStatusCode.Conflict, response.StatusCode));
-        Assert.Equal(1, await countAccounts());
+        var statuses = responses.Select(static response => response.StatusCode).ToArray();
 
         foreach (var response in responses)
             response.Dispose();
+
+        Assert.Single(statuses, static status => status == HttpStatusCode.Created);
+        Assert.All(statuses.Where(static status => status != HttpStatusCode.Created),
+            static status => Assert.Equal(HttpStatusCode.Conflict, status));
+        Assert.Equal(1, await countAccounts());
     }
 
     [Fact]
@@ -132,6 +134,17 @@ public sealed class AccountRegistrationTests(IntegrationFactory factory) : Integ
         Assert.Equal(HttpStatusCode.BadRequest, response.StatusCode);
         Assert.Contains("email", problem!.Errors.Keys);
         Assert.Contains("password", problem!.Errors.Keys);
+    }
+
+    [Theory]
+    [InlineData("o'brien@yggdrasil.cc")]
+    [InlineData("joão@yggdrasil.cc")]
+    [InlineData("player+tag@yggdrasil.cc")]
+    public async Task ValidEmailsWithSpecialCharactersAreAccepted(string email)
+    {
+        using var response = await Client.PostAsJsonAsync(accounts, new RegisterAccountCommand(email, password), CancellationToken);
+
+        Assert.Equal(HttpStatusCode.Created, response.StatusCode);
     }
 
     /// <summary>Posts a registration that must fail validation, and checks that nothing was persisted.</summary>
