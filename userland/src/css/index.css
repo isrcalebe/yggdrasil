@@ -1,0 +1,105 @@
+@import "tailwindcss";
+@import "tw-animate-css";
+@import "shadcn/tailwind.css";
+@import "@fontsource-variable/unbounded";
+@import "@fontsource-variable/atkinson-hyperlegible-next";
+@import "@fontsource-variable/jetbrains-mono";
+
+/*
+  dark: utilities only apply under a .dark class.
+  Without this, Tailwind follows the OS color scheme and the components' dark styles would mix with this light-only palette. */
+@custom-variant dark (&:is(.dark *));
+
+/*
+ * Yggdrasil palette. Contrast is measured against Frost:
+ *   Rune ink  #161B2E  text and primary actions
+ *   Mist      #5B6472  secondary text (5.3:1; the lighter #6B7482 fails 4.5:1)
+ *   Sap       #E0A526  the root line (decorative, ~2:1 on purpose)
+ *   Sap deep  #A7760E  focus ring (3.5:1, visible as a non-text indicator)
+ *   Ember     #B3261E  errors (5.7:1)
+ */
+:root {
+  --frost: #eef2f4;
+  --frost-raised: #f8fafb;
+  --frost-sunken: #dde4e9;
+  --rune-ink: #161b2e;
+  --mist: #5b6472;
+  --mist-line: #c3cbd2;
+  --sap: #e0a526;
+  --sap-deep: #a7760e;
+  --ember: #b3261e;
+
+  /* shadcn/ui semantic tokens, mapped to the palette. */
+  --background: var(--frost);
+  --foreground: var(--rune-ink);
+  --card: var(--frost-raised);
+  --card-foreground: var(--rune-ink);
+  --popover: var(--frost-raised);
+  --popover-foreground: var(--rune-ink);
+  --primary: var(--rune-ink);
+  --primary-foreground: var(--frost);
+  --secondary: var(--frost-sunken);
+  --secondary-foreground: var(--rune-ink);
+  --muted: var(--frost-sunken);
+  --muted-foreground: var(--mist);
+  --accent: var(--frost-sunken);
+  --accent-foreground: var(--rune-ink);
+  --destructive: var(--ember);
+  --border: var(--mist-line);
+  --input: var(--mist-line);
+  --ring: var(--sap-deep);
+
+  --radius: 0.25rem;
+}
+
+@theme inline {
+  --font-heading: "Unbounded Variable", sans-serif;
+  --font-sans: "Atkinson Hyperlegible Next Variable", sans-serif;
+  --font-mono: "JetBrains Mono Variable", monospace;
+
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+  --color-popover: var(--popover);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-secondary: var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-destructive: var(--destructive);
+  --color-border: var(--border);
+  --color-input: var(--input);
+  --color-ring: var(--ring);
+
+  /* Signature color: the root line that shows where the player is signing in. */
+  --color-sap: var(--sap);
+
+  --radius-sm: calc(var(--radius) * 0.6);
+  --radius-md: calc(var(--radius) * 0.8);
+  --radius-lg: var(--radius);
+  --radius-xl: calc(var(--radius) * 1.4);
+}
+
+@layer base {
+  * {
+    @apply border-border outline-ring/50;
+  }
+
+  html {
+    @apply font-sans;
+  }
+
+  body {
+    @apply bg-background text-foreground antialiased;
+  }
+
+  button:not(:disabled),
+  [role="button"]:not(:disabled) {
+    cursor: pointer;
+  }
+}

@@ -62,4 +62,18 @@ export default defineConfig([
       ],
     },
   },
+  {
+    // shadcn/ui components are generated code that exports style helpers (e.g. buttonVariants) next to components.
+    files: ["src/components/ui/**"],
+    rules: {
+      "react-refresh/only-export-components": "off",
+    },
+  },
+  {
+    // TanStack Router route files export a `Route` object next to their components.
+    files: ["src/routes/**"],
+    rules: {
+      "react-refresh/only-export-components": ["error", { allowExportNames: ["Route"] }],
+    },
+  },
 ]);

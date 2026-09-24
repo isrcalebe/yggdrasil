@@ -8,6 +8,9 @@
 
     "**/bin": true,
     "**/obj": true,
+
+    "**/dist": true,
+    "**/node_modules": true,
   },
   "explorer.fileNesting.enabled": true,
   "explorer.fileNesting.patterns": {
@@ -22,5 +25,14 @@
     "editor.formatOnSave": true,
   },
 
-  "dotnet.formatting.organizeImportsOnFormat": true
+  "dotnet.formatting.organizeImportsOnFormat": true,
+
+  "[typescript][typescriptreact][javascript][javascriptreact]": {
+    "editor.formatOnSave": false,
+    "editor.codeActionsOnSave": {
+      "source.fixAll.eslint": "explicit"
+    }
+  },
+  "eslint.workingDirectories": ["./userland"],
+  "files.readonlyInclude": { "**/routeTree.gen.ts": true },
 }
