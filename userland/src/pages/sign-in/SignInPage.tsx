@@ -1,3 +1,4 @@
+import { Link } from "@tanstack/react-router";
 import { useActionState } from "react";
 
 import { PasswordInput } from "@yggdrasil/components/PasswordInput";
@@ -97,7 +98,9 @@ export function SignInPage({ returnUrl }: { returnUrl?: string }) {
           <p className="text-sm text-muted-foreground">
             New to Yggdrasil?
             {" "}
-            <a href="/register" className="text-foreground underline underline-offset-4">Create a Yggdrasil ID</a>
+            <Link to="/register" search={{ returnUrl }} className="text-foreground underline underline-offset-4">
+              Create a Yggdrasil ID
+            </Link>
           </p>
         </form>
       </section>
