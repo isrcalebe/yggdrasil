@@ -34,4 +34,5 @@
     }
   },
   "eslint.workingDirectories": ["./userland"],
+  "files.readonlyInclude": { "**/routeTree.gen.ts": true },
 }
