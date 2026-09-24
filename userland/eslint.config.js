@@ -62,4 +62,11 @@ export default defineConfig([
       ],
     },
   },
+  {
+    // shadcn/ui components are generated code that exports style helpers (e.g. buttonVariants) next to components.
+    files: ["src/components/ui/**"],
+    rules: {
+      "react-refresh/only-export-components": "off",
+    },
+  },
 ]);
