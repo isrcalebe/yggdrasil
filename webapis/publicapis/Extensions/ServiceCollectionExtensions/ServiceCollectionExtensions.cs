@@ -46,6 +46,8 @@ public static class ServiceCollectionExtensions
             => self
                 .AddRouting(static options => options.LowercaseUrls = true)
                 .AddApiVersioningDefaults()
+                .AddAuthorization()
+                .AddAntiforgery(static options => options.HeaderName = "X-XSRF-TOKEN")
                 .AddProblemDetails(static options => options.CustomizeProblemDetails = static context =>
                 {
                     var environment = context.HttpContext.RequestServices.GetRequiredService<IHostEnvironment>();
