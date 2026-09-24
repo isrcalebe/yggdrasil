@@ -22,6 +22,12 @@ if (!root) {
   throw new Error("Missing #root element in index.html.");
 }
 
+// Pages restored from the back/forward cache keep stale session state (signed in or out elsewhere): reload them.
+window.addEventListener("pageshow", (event) => {
+  if (event.persisted)
+    window.location.reload();
+});
+
 createRoot(root).render(
   <StrictMode>
     <RouterProvider router={router} />
