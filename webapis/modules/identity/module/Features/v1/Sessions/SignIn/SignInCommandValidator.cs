@@ -12,9 +12,12 @@ public sealed class SignInCommandValidator : AbstractValidator<SignInCommand>
         RuleFor(command => command.ReturnUrl)
             .Must(beLocalUrl!)
             .When(static command => command.ReturnUrl is not null)
-            .WithMessage("The return URL must be a local path");
+            .WithMessage("The return URL must be a local path.");
     }
 
+    // Same rule as ASP.NET's IUrlHelper.IsLocalUrl: a rooted path, not "//host" or "/\host", and no control characters, which browsers strip ("/\t/host" becomes "//host").
     private static bool beLocalUrl(string url)
-        => url.StartsWith('/') && (url.Length == 1 || (url[1] != '/' && url[1] != '\\'));
+        => url.StartsWith('/')
+            && (url.Length == 1 || (url[1] != '/' && url[1] != '\\'))
+            && !url.Any(char.IsControl);
 }

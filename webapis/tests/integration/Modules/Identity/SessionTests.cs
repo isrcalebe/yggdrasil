@@ -86,6 +86,8 @@ public sealed class SessionTests(IntegrationFactory factory) : IntegrationTest(f
     [InlineData("https://evil.example")]
     [InlineData("//evil.example")]
     [InlineData("/\\evil.example")]
+    [InlineData("/\t/evil.example")]
+    [InlineData("/\n/evil.example")]
     public async Task NonLocalReturnUrlIsRejected(string returnUrl)
     {
         await registerAsync();
