@@ -1,6 +1,7 @@
 import { Link } from "@tanstack/react-router";
 import { useActionState } from "react";
 
+import { PasswordInput } from "@yggdrasil/components/PasswordInput";
 import { destinationOf } from "@yggdrasil/components/root-line/destination";
 import { RootLine } from "@yggdrasil/components/root-line/RootLine";
 import { useArrival } from "@yggdrasil/components/root-line/use-arrival";
@@ -110,10 +111,9 @@ export function RegisterPage({ returnUrl }: { returnUrl?: string }) {
 
                 <div className="grid gap-2">
                   <Label htmlFor="password">Password</Label>
-                  <Input
+                  <PasswordInput
                     id="password"
                     name="password"
-                    type="password"
                     autoComplete="new-password"
                     required
                     aria-invalid={errors.password !== undefined}
