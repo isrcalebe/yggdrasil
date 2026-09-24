@@ -104,6 +104,26 @@ public sealed class AccountRegistrationTests(IntegrationFactory factory) : Integ
     }
 
     [Fact]
+    public async Task ConcurrentRegistrationsWithSameEmailCreateOneAccount()
+    {
+        var command = new RegisterAccountCommand("player@yggdrasil.cc", password);
+
+        var responses = await Task.WhenAll(
+            Enumerable
+                .Range(0, 10)
+                .Select(_ => Client.PostAsJsonAsync(accounts, command, CancellationToken))
+        );
+
+        Assert.Single(responses, static response => response.StatusCode == HttpStatusCode.Created);
+        Assert.All(responses.Where(static response => response.StatusCode != HttpStatusCode.Created),
+            static response => Assert.Equal(HttpStatusCode.Conflict, response.StatusCode));
+        Assert.Equal(1, await countAccounts());
+
+        foreach (var response in responses)
+            response.Dispose();
+    }
+
+    [Fact]
     public async Task MissingFieldsAreValidationProblem()
     {
         using var response = await Client.PostAsync(accounts, JsonContent.Create(new { }), CancellationToken);
