@@ -48,7 +48,7 @@ export function SignInPage({ returnUrl }: { returnUrl?: string }) {
 
     // Full navigation: the destination can be a server route such as /connect/authorize.
     const timeout = window.setTimeout(() => {
-      window.location.assign(redirectTo);
+      window.location.replace(redirectTo);
     }, reducedMotion ? 0 : root_growth_ms);
 
     return () => {
