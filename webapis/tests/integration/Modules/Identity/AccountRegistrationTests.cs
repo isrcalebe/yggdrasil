@@ -103,6 +103,17 @@ public sealed class AccountRegistrationTests(IntegrationFactory factory) : Integ
         Assert.Equal(0, await countAccounts());
     }
 
+    [Fact]
+    public async Task MissingFieldsAreValidationProblem()
+    {
+        using var response = await Client.PostAsync(accounts, JsonContent.Create(new { }), CancellationToken);
+        var problem = await response.Content.ReadFromJsonAsync<HttpValidationProblemDetails>(CancellationToken);
+
+        Assert.Equal(HttpStatusCode.BadRequest, response.StatusCode);
+        Assert.Contains("email", problem!.Errors.Keys);
+        Assert.Contains("password", problem!.Errors.Keys);
+    }
+
     /// <summary>Posts a registration that must fail validation, and checks that nothing was persisted.</summary>
     private async Task<IDictionary<string, string[]>> registerExpectingValidationProblem(RegisterAccountCommand command)
     {
