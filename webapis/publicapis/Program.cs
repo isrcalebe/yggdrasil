@@ -39,6 +39,8 @@ try
             application
                 .UseResponseCompression()
                 .UseRouting()
+                .UseAuthentication()
+                .UseAuthorization()
                 .UseModules()
                 .UseOutputCache()
                 .UseEndpoints(endpoints =>
