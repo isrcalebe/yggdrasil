@@ -19,6 +19,10 @@ export interface SignInResult {
   redirectTo: string;
 }
 
+export interface RegisterAccountResult {
+  accountId: string;
+}
+
 export async function signIn(email: string, password: string, returnUrl?: string): Promise<SignInResult> {
   const result = (await request(`${identity}/sessions`,
     { method: "POST",
@@ -52,4 +56,14 @@ export async function getCurrentSession(signal?: AbortSignal): Promise<CurrentSe
 
     throw error;
   }
+}
+
+export async function registerAccount(email: string, password: string): Promise<RegisterAccountResult> {
+  return (await request(`${identity}/accounts`, {
+    method: "POST",
+    body: {
+      email,
+      password,
+    },
+  })) as RegisterAccountResult;
 }
