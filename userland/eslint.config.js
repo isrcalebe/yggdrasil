@@ -69,4 +69,11 @@ export default defineConfig([
       "react-refresh/only-export-components": "off",
     },
   },
+  {
+    // TanStack Router route files export a `Route` object next to their components.
+    files: ["src/routes/**"],
+    rules: {
+      "react-refresh/only-export-components": ["error", { allowExportNames: ["Route"] }],
+    },
+  },
 ]);
