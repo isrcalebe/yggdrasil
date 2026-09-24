@@ -23,6 +23,7 @@ public sealed class IdentityModule : IModule
         services.AddIdentityCore<Account>(static options =>
         {
             options.User.RequireUniqueEmail = true;
+            options.User.AllowedUserNameCharacters = string.Empty;
             options.Password.RequiredLength = 8;
         })
             .AddRoles<IdentityRole<Guid>>()
