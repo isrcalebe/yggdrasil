@@ -21,6 +21,8 @@ public static class ServiceCollectionExtensions
             => self
                 .AddSingleton(TimeProvider.System)
                 .AddExceptionHandler<ValidationExceptionHandler>()
+                .AddExceptionHandler<BadHttpRequestExceptionHandler>()
+                .Configure<RouteHandlerOptions>(static options => options.ThrowOnBadRequest = true)
                 .AddOutputCache()
                 .AddResponseCompression();
 
