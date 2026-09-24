@@ -1,12 +1,15 @@
-import { useActionState, useEffect } from "react";
+import { Link } from "@tanstack/react-router";
+import { useActionState } from "react";
 
+import { PasswordInput } from "@yggdrasil/components/PasswordInput";
+import { destinationOf } from "@yggdrasil/components/root-line/destination";
+import { RootLine } from "@yggdrasil/components/root-line/RootLine";
+import { useArrival } from "@yggdrasil/components/root-line/use-arrival";
 import { Button } from "@yggdrasil/components/ui/button";
 import { Input } from "@yggdrasil/components/ui/input";
 import { Label } from "@yggdrasil/components/ui/label";
 import { signIn } from "@yggdrasil/lib/api/identity";
 
-import { RootLine } from "./~components/RootLine";
-import { destinationOf } from "./destination";
 import { describeSignInError, type SignInErrors } from "./sign-in-errors";
 
 interface SignInState {
@@ -15,8 +18,6 @@ interface SignInState {
   errors: SignInErrors;
   redirectTo?: string;
 }
-
-const root_growth_ms = 500;
 
 export function SignInPage({ returnUrl }: { returnUrl?: string }) {
   const destination = destinationOf(returnUrl);
@@ -39,22 +40,7 @@ export function SignInPage({ returnUrl }: { returnUrl?: string }) {
   // Signed in: the root grows to the destination, then the page leaves.
   const arriving = state.redirectTo !== undefined;
 
-  useEffect(() => {
-    if (state.redirectTo === undefined)
-      return;
-
-    const redirectTo = state.redirectTo;
-    const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-
-    // Full navigation: the destination can be a server route such as /connect/authorize.
-    const timeout = window.setTimeout(() => {
-      window.location.replace(redirectTo);
-    }, reducedMotion ? 0 : root_growth_ms);
-
-    return () => {
-      window.clearTimeout(timeout);
-    };
-  }, [state.redirectTo]);
+  useArrival(state.redirectTo);
 
   const { errors } = state;
 
@@ -94,10 +80,9 @@ export function SignInPage({ returnUrl }: { returnUrl?: string }) {
 
           <div className="grid gap-2">
             <Label htmlFor="password">Password</Label>
-            <Input
+            <PasswordInput
               id="password"
               name="password"
-              type="password"
               autoComplete="current-password"
               required
               aria-invalid={errors.password !== undefined}
@@ -113,7 +98,9 @@ export function SignInPage({ returnUrl }: { returnUrl?: string }) {
           <p className="text-sm text-muted-foreground">
             New to Yggdrasil?
             {" "}
-            <a href="/register" className="text-foreground underline underline-offset-4">Create a Yggdrasil ID</a>
+            <Link to="/register" search={{ returnUrl }} className="text-foreground underline underline-offset-4">
+              Create a Yggdrasil ID
+            </Link>
           </p>
         </form>
       </section>

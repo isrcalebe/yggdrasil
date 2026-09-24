@@ -1,5 +1,6 @@
 import { cn } from "@yggdrasil/lib/utils";
-import type { Destination } from "@yggdrasil/pages/sign-in/destination";
+
+import type { Destination } from "./destination";
 
 interface RootLineProps {
   destination: Destination;
