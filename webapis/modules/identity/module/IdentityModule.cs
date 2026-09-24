@@ -4,6 +4,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using yggdrasil.Modules.Identity.Data;
 using yggdrasil.Modules.Identity.Domain;
+using yggdrasil.Modules.Identity.Features.v1.Accounts.RegisterAccount;
 using yggdrasil.Persistence;
 using yggdrasil.Web.Modules;
 
@@ -19,12 +20,16 @@ public sealed class IdentityModule : IModule
     {
         services.AddModuleDbContext<IdentityModuleDbContext>();
 
-        services.AddIdentityCore<Account>()
+        services.AddIdentityCore<Account>(static options =>
+        {
+            options.User.RequireUniqueEmail = true;
+            options.User.AllowedUserNameCharacters = string.Empty;
+            options.Password.RequiredLength = 8;
+        })
             .AddRoles<IdentityRole<Guid>>()
             .AddEntityFrameworkStores<IdentityModuleDbContext>();
     }
 
     public void MapEndpoints(IEndpointRouteBuilder endpoints)
-    {
-    }
+        => endpoints.MapRegisterAccountEndpoint();
 }
