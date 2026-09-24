@@ -15,10 +15,12 @@ public sealed class RegisterAccountCommandHandler(UserManager<Account> userManag
     {
         ArgumentNullException.ThrowIfNull(command);
 
-        if (await userManager.FindByEmailAsync(command.Email) is not null)
+        var email = command.Email.Trim();
+
+        if (await userManager.FindByEmailAsync(email) is not null)
             return email_taken;
 
-        var account = new Account { UserName = command.Email, Email = command.Email };
+        var account = new Account { UserName = email, Email = email };
         var result = await userManager.CreateAsync(account, command.Password);
 
         if (result.Succeeded)
