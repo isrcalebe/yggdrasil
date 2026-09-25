@@ -44,6 +44,8 @@ public sealed class IdentityModule : IModule
             .AddEntityFrameworkStores<IdentityModuleDbContext>()
             .AddSignInManager();
 
+        services.AddOpenIdServer();
+
         services.AddOptions<CookieAuthenticationOptions>(IdentityConstants.ApplicationScheme)
             .Configure<IHostEnvironment>(static (options, environment) =>
             {
