@@ -15,6 +15,8 @@ public sealed class IdentityModuleDbContext(DbContextOptions<IdentityModuleDbCon
     {
         base.OnModelCreating(builder);
 
+        builder.UseOpenIddict<Guid>();
+
         builder.ApplyModuleConventions<IdentityModuleDbContext>();
     }
 }
