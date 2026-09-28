@@ -1,5 +1,6 @@
 using System.Globalization;
 using Serilog;
+using yggdrasil.Modules.Games;
 using yggdrasil.Modules.Identity;
 using yggdrasil.PublicApis.Extensions.EndpointRouteBuilderExtensions;
 using yggdrasil.PublicApis.Extensions.ServiceCollectionExtensions;
@@ -25,7 +26,8 @@ try
                 .UseLogging();
 
             services.AddModules(configuration,
-                new IdentityModule());
+                new IdentityModule(),
+                new GamesModule());
         })
         .UsePipelines((application, configuration, services, environment) =>
         {
