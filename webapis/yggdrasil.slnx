@@ -13,6 +13,8 @@
   <Folder Name="/Modules/">
     <Project Path="modules/identity/contracts/yggdrasil.Modules.Identity.Contracts.csproj" />
     <Project Path="modules/identity/module/yggdrasil.Modules.Identity.csproj" />
+    <Project Path="modules/games/contracts/yggdrasil.Modules.Games.Contracts.csproj" />
+    <Project Path="modules/games/module/yggdrasil.Modules.Games.csproj" />
   </Folder>
   <Folder Name="/Tests/">
     <Project Path="tests/architecture/yggdrasil.Architecture.Tests.csproj" />
