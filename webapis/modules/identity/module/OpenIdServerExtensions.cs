@@ -2,6 +2,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using OpenIddict.Server.AspNetCore;
 using yggdrasil.Modules.Identity.Data;
+using static OpenIddict.Abstractions.OpenIddictConstants;
 
 namespace yggdrasil.Modules.Identity;
 
@@ -24,11 +25,20 @@ internal static class OpenIdServerExtensions
                         .SetAuthorizationEndpointUris("connect/authorize")
                         .SetTokenEndpointUris("connect/token");
 
+                    options.RegisterScopes(Scopes.OpenId, Scopes.Email);
+
                     options
                         .AddEphemeralEncryptionKey()
                         .AddEphemeralSigningKey();
 
-                    options.UseAspNetCore();
+                    // Game servers validate access tokens locally against the published keys (JWKS): signed, not encrypted.
+                    options.DisableAccessTokenEncryption();
+
+                    // /connect/authorize is handled by AuthorizeEndpoint; the token endpoint needs no code of ours for
+                    // the authorization code grant, OpenIddict issues the tokens from the principal stored in the code.
+                    options
+                        .UseAspNetCore()
+                        .EnableAuthorizationEndpointPassthrough();
                 });
 
             self.AddOptions<OpenIddictServerAspNetCoreOptions>()
