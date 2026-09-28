@@ -20,4 +20,7 @@
     <PackageReference Include="Serilog.Exceptions" />
     <PackageReference Include="Serilog.Expressions" />
   </ItemGroup>
+  <PropertyGroup>
+    <UserSecretsId>d343b223-521d-4016-9f6b-f4bb14a860b5</UserSecretsId>
+  </PropertyGroup>
 </Project>

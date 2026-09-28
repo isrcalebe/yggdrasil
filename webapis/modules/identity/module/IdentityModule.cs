@@ -5,9 +5,12 @@ using Microsoft.AspNetCore.Routing;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using yggdrasil.Modules.Identity.Administration;
+using yggdrasil.Modules.Identity.Contracts;
 using yggdrasil.Modules.Identity.Data;
 using yggdrasil.Modules.Identity.Domain;
 using yggdrasil.Modules.Identity.Features.v1.Accounts.RegisterAccount;
+using yggdrasil.Modules.Identity.Features.v1.Administrators;
 using yggdrasil.Modules.Identity.Features.v1.Antiforgery.GetAntiforgeryToken;
 using yggdrasil.Modules.Identity.Features.v1.Sessions.GetCurrentSession;
 using yggdrasil.Modules.Identity.Features.v1.Sessions.SignIn;
@@ -45,6 +48,10 @@ public sealed class IdentityModule : IModule
             .AddEntityFrameworkStores<IdentityModuleDbContext>()
             .AddSignInManager();
 
+        services
+            .AddAuthorizationBuilder()
+            .AddPolicy(IdentityPolicies.ADMIN, static policy => policy.RequireRole(Roles.ADMIN));
+
         services.AddOpenIdServer();
 
         services.AddOptions<CookieAuthenticationOptions>(IdentityConstants.ApplicationScheme)
@@ -70,6 +77,9 @@ public sealed class IdentityModule : IModule
                     return Task.CompletedTask;
                 };
             });
+
+        services.AddSingleton<AdministratorSeeder>();
+        services.AddHostedService(static services => services.GetRequiredService<AdministratorSeeder>());
     }
 
     public void MapEndpoints(IEndpointRouteBuilder endpoints)
@@ -79,6 +89,7 @@ public sealed class IdentityModule : IModule
         endpoints.MapSignInEndpoint();
         endpoints.MapGetCurrentSessionEndpoint();
         endpoints.MapSignOutEndpoint();
+        endpoints.MapGrantAdministratorEndpoint();
     }
 
     public void MapRootEndpoints(IEndpointRouteBuilder endpoints)
