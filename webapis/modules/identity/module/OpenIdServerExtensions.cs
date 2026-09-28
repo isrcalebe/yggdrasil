@@ -44,7 +44,8 @@ internal static class OpenIdServerExtensions
                     // the authorization code grant, OpenIddict issues the tokens from the principal stored in the code.
                     options
                         .UseAspNetCore()
-                        .EnableAuthorizationEndpointPassthrough();
+                        .EnableAuthorizationEndpointPassthrough()
+                        .EnableTokenEndpointPassthrough();
                 });
 
             self.AddOptions<OpenIddictServerAspNetCoreOptions>()

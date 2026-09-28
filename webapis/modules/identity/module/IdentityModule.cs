@@ -84,5 +84,6 @@ public sealed class IdentityModule : IModule
     public void MapRootEndpoints(IEndpointRouteBuilder endpoints)
     {
         endpoints.MapAuthorizeEndpoint();
+        endpoints.MapTokenEndpoint();
     }
 }
