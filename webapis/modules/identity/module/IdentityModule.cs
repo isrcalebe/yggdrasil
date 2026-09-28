@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Routing;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using yggdrasil.Modules.Identity.Contracts;
 using yggdrasil.Modules.Identity.Data;
 using yggdrasil.Modules.Identity.Domain;
 using yggdrasil.Modules.Identity.Features.v1.Accounts.RegisterAccount;
@@ -44,6 +45,10 @@ public sealed class IdentityModule : IModule
             .AddRoles<IdentityRole<Guid>>()
             .AddEntityFrameworkStores<IdentityModuleDbContext>()
             .AddSignInManager();
+
+        services
+            .AddAuthorizationBuilder()
+            .AddPolicy(IdentityPolicies.ADMIN, static policy => policy.RequireRole(Roles.ADMIN));
 
         services.AddOpenIdServer();
 
