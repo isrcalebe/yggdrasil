@@ -1,5 +1,7 @@
 using System.Net.Http.Json;
 using Microsoft.AspNetCore.Mvc.Testing;
+using Microsoft.Extensions.DependencyInjection;
+using yggdrasil.Modules.Identity.Administration;
 using yggdrasil.Modules.Identity.Contracts.v1.Accounts;
 using yggdrasil.Modules.Identity.Contracts.v1.Antiforgery;
 using yggdrasil.Modules.Identity.Contracts.v1.Sessions;
@@ -50,6 +52,17 @@ internal sealed class SignedInAccount : IDisposable
 
         // Antiforgery tokens are bound to the signed-in user: the one used to sign in is no longer valid.
         return new SignedInAccount(id, http, await antiforgeryTokenAsync(http, cancellationToken));
+    }
+
+    /// <summary>
+    /// The first administrator, created the way a deployment does it: listed for the seeder.
+    /// </summary>
+    public static async Task<SignedInAccount> SignInAsAdministratorAsync(WebApplicationFactory<Program> factory, string email, CancellationToken cancellationToken)
+    {
+        var id = await RegisterAsync(factory, email, cancellationToken);
+        await factory.Services.GetRequiredService<AdministratorSeeder>().SeedAsync([id], cancellationToken);
+
+        return await SignInAsync(factory, id, email, cancellationToken);
     }
 
     public async Task<HttpResponseMessage> SendAsync(HttpMethod method, string path, CancellationToken cancellationToken)

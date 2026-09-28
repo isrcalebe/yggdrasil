@@ -1,5 +1,6 @@
 using System.Net;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Mvc.Testing;
 using Microsoft.Extensions.DependencyInjection;
 using yggdrasil.Integration.Tests.Infrastructure;
 using yggdrasil.Modules.Identity.Administration;
@@ -37,7 +38,7 @@ public sealed class AdministratorTests(IntegrationFactory factory) : Integration
     [Fact]
     public async Task AdministratorGrantsTheRole()
     {
-        using var admin = await signInAsAdministratorAsync();
+        using var admin = await SignedInAccount.SignInAsAdministratorAsync(Factory, admin_email, CancellationToken);
         var playerId = await SignedInAccount.RegisterAsync(Factory, player_email, CancellationToken);
 
         using var granted = await admin.SendAsync(HttpMethod.Put, $"/api/v1/identity/administrators/{playerId}", CancellationToken);
@@ -53,7 +54,7 @@ public sealed class AdministratorTests(IntegrationFactory factory) : Integration
     [Fact]
     public async Task GrantingAnUnknownAccountIsNotFound()
     {
-        using var admin = await signInAsAdministratorAsync();
+        using var admin = await SignedInAccount.SignInAsAdministratorAsync(Factory, admin_email, CancellationToken);
 
         using var response = await admin.SendAsync(HttpMethod.Put, $"/api/v1/identity/administrators/{Guid.CreateVersion7()}", CancellationToken);
 
@@ -85,16 +86,5 @@ public sealed class AdministratorTests(IntegrationFactory factory) : Integration
         var accounts = scope.ServiceProvider.GetRequiredService<UserManager<Account>>();
 
         Assert.True(await accounts.IsInRoleAsync((await accounts.FindByIdAsync(adminId.ToString()))!, "admin"));
-    }
-
-    /// <summary>
-    /// The first administrator, created the way a deployment does it: listed for the seeder.
-    /// </summary>
-    private async Task<SignedInAccount> signInAsAdministratorAsync()
-    {
-        var adminId = await SignedInAccount.RegisterAsync(Factory, admin_email, CancellationToken);
-        await Factory.Services.GetRequiredService<AdministratorSeeder>().SeedAsync([adminId], CancellationToken);
-
-        return await SignedInAccount.SignInAsync(Factory, adminId, admin_email, CancellationToken);
     }
 }
