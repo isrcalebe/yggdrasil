@@ -1,6 +1,8 @@
 using Microsoft.AspNetCore.Routing;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using yggdrasil.Modules.Games.Data;
+using yggdrasil.Persistence;
 using yggdrasil.Web.Modules;
 
 namespace yggdrasil.Modules.Games;
@@ -13,8 +15,7 @@ public sealed class GamesModule : IModule
     public string Name => NAME;
 
     public void ConfigureServices(IServiceCollection services, IConfiguration configuration)
-    {
-    }
+        => services.AddModuleDbContext<GamesModuleDbContext>();
 
     public void MapEndpoints(IEndpointRouteBuilder endpoints)
     {
