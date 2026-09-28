@@ -41,8 +41,8 @@ internal static class OpenIdServerExtensions
                     // Game servers validate access tokens locally against the published keys (JWKS): signed, not encrypted.
                     options.DisableAccessTokenEncryption();
 
-                    // /connect/authorize is handled by AuthorizeEndpoint; the token endpoint needs no code of ours for
-                    // the authorization code grant, OpenIddict issues the tokens from the principal stored in the code.
+                    // After validating a request, OpenIddict hands it to our endpoints (OpenId/AuthorizeEndpoint and
+                    // OpenId/TokenEndpoint), which decide who the tokens are about.
                     options
                         .UseAspNetCore()
                         .EnableAuthorizationEndpointPassthrough()
