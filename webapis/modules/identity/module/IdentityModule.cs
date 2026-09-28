@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Routing;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using yggdrasil.Modules.Identity.Administration;
 using yggdrasil.Modules.Identity.Contracts;
 using yggdrasil.Modules.Identity.Data;
 using yggdrasil.Modules.Identity.Domain;
@@ -75,6 +76,9 @@ public sealed class IdentityModule : IModule
                     return Task.CompletedTask;
                 };
             });
+
+        services.AddSingleton<AdministratorSeeder>();
+        services.AddHostedService(static services => services.GetRequiredService<AdministratorSeeder>());
     }
 
     public void MapEndpoints(IEndpointRouteBuilder endpoints)
