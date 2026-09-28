@@ -65,9 +65,12 @@ internal sealed class SignedInAccount : IDisposable
         return await SignInAsync(factory, id, email, cancellationToken);
     }
 
-    public async Task<HttpResponseMessage> SendAsync(HttpMethod method, string path, CancellationToken cancellationToken)
+    public Task<HttpResponseMessage> SendAsync(HttpMethod method, string path, CancellationToken cancellationToken)
+    => SendAsync(method, path, null, cancellationToken);
+
+    public async Task<HttpResponseMessage> SendAsync(HttpMethod method, string path, HttpContent? content, CancellationToken cancellationToken)
     {
-        using var request = new HttpRequestMessage(method, new Uri(path, UriKind.Relative));
+        using var request = new HttpRequestMessage(method, new Uri(path, UriKind.Relative)) { Content = content };
         request.Headers.Add(antiforgery_header, antiforgeryToken);
 
         return await Http.SendAsync(request, cancellationToken);
