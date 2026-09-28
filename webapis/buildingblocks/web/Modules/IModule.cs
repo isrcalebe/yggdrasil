@@ -25,4 +25,9 @@ public interface IModule
 
     /// <summary>Optional middleware, executed after routing and before endpoints.</summary>
     void ConfigureMiddleware(IApplicationBuilder app) { }
+
+    /// <summary>
+    /// Optional endpoints outside the versioned API, at absolute paths fixed by a protocol (e.g. OAuth's /connect/authorize).
+    /// </summary>
+    void MapRootEndpoints(IEndpointRouteBuilder endpoints) { }
 }

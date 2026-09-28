@@ -12,6 +12,7 @@ using yggdrasil.Modules.Identity.Features.v1.Antiforgery.GetAntiforgeryToken;
 using yggdrasil.Modules.Identity.Features.v1.Sessions.GetCurrentSession;
 using yggdrasil.Modules.Identity.Features.v1.Sessions.SignIn;
 using yggdrasil.Modules.Identity.Features.v1.Sessions.SignOut;
+using yggdrasil.Modules.Identity.OpenId;
 using yggdrasil.Persistence;
 using yggdrasil.Web.Modules;
 
@@ -78,5 +79,10 @@ public sealed class IdentityModule : IModule
         endpoints.MapSignInEndpoint();
         endpoints.MapGetCurrentSessionEndpoint();
         endpoints.MapSignOutEndpoint();
+    }
+
+    public void MapRootEndpoints(IEndpointRouteBuilder endpoints)
+    {
+        endpoints.MapAuthorizeEndpoint();
     }
 }
