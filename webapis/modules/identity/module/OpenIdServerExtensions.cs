@@ -23,6 +23,7 @@ internal static class OpenIdServerExtensions
                         .AllowAuthorizationCodeFlow()
                         .RequireProofKeyForCodeExchange()
                         .AllowRefreshTokenFlow()
+                        .AllowClientCredentialsFlow()
                         .SetAuthorizationEndpointUris("connect/authorize")
                         .SetTokenEndpointUris("connect/token");
 
