@@ -1,5 +1,6 @@
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc.Testing;
+using Microsoft.Extensions.Configuration.Json;
 
 namespace yggdrasil.PublicApis.Tests;
 
@@ -18,5 +19,11 @@ public sealed class PublicApisFactory : WebApplicationFactory<Program>
         builder
             .UseSetting("ConnectionStrings:Database", UNREACHABLE_DATABASE)
             .UseSetting("Database:MigrateOnStartup", "false");
+
+        builder.ConfigureAppConfiguration(static (_, configuration) =>
+        {
+            foreach (var secrets in configuration.Sources.OfType<JsonConfigurationSource>().Where(static source => source.Path == "secrets.json").ToList())
+                configuration.Sources.Remove(secrets);
+        });
     }
 }
