@@ -14,5 +14,11 @@ public sealed class GameConfiguration : IEntityTypeConfiguration<Game>
         builder.HasIndex(static game => game.Slug).IsUnique();
 
         builder.Property(static game => game.Name).HasMaxLength(Game.NAME_MAX_LENGTH);
+
+        builder.Property(static game => game.ClientId).HasMaxLength(Game.CLIENT_ID_MAX_LENGTH);
+        builder.HasIndex(static game => game.ClientId).IsUnique();
+
+        builder.Property(static game => game.ServerClientId).HasMaxLength(Game.CLIENT_ID_MAX_LENGTH);
+        builder.HasIndex(static game => game.ServerClientId).IsUnique();
     }
 }

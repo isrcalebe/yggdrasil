@@ -2,6 +2,7 @@ using Microsoft.AspNetCore.Routing;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using yggdrasil.Modules.Games.Data;
+using yggdrasil.Modules.Games.Features.v1.Games.RegisterGame;
 using yggdrasil.Persistence;
 using yggdrasil.Web.Modules;
 
@@ -19,5 +20,6 @@ public sealed class GamesModule : IModule
 
     public void MapEndpoints(IEndpointRouteBuilder endpoints)
     {
+        endpoints.MapRegisterGameEndpoint();
     }
 }

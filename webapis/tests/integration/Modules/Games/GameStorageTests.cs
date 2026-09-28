@@ -14,7 +14,7 @@ public sealed class GameStorageTests(IntegrationFactory factory) : IntegrationTe
     [Fact]
     public async Task GameIsStoredAndReadBack()
     {
-        var game = new Game("my-game", "My Game", created_at);
+        var game = new Game("my-game", "My Game", "my-game", "my-game.server", created_at);
 
         await using (var scope = Factory.Services.CreateAsyncScope())
         {
@@ -40,10 +40,10 @@ public sealed class GameStorageTests(IntegrationFactory factory) : IntegrationTe
         await using var scope = Factory.Services.CreateAsyncScope();
         var context = scope.ServiceProvider.GetRequiredService<GamesModuleDbContext>();
 
-        context.Games.Add(new Game("my-game", "My Game", created_at));
+        context.Games.Add(new Game("my-game", "My Game", "my-game", "my-game.server", created_at));
         await context.SaveChangesAsync(CancellationToken);
 
-        context.Games.Add(new Game("my-game", "Another Game", created_at));
+        context.Games.Add(new Game("my-game", "Another Game", "another-game", "another-game.server", created_at));
         var exception = await Assert.ThrowsAsync<DbUpdateException>(() => context.SaveChangesAsync(CancellationToken));
 
         Assert.True(exception.IsUniqueViolation);

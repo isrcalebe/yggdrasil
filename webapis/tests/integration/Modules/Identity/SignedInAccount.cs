@@ -1,5 +1,7 @@
 using System.Net.Http.Json;
 using Microsoft.AspNetCore.Mvc.Testing;
+using Microsoft.Extensions.DependencyInjection;
+using yggdrasil.Modules.Identity.Administration;
 using yggdrasil.Modules.Identity.Contracts.v1.Accounts;
 using yggdrasil.Modules.Identity.Contracts.v1.Antiforgery;
 using yggdrasil.Modules.Identity.Contracts.v1.Sessions;
@@ -52,9 +54,23 @@ internal sealed class SignedInAccount : IDisposable
         return new SignedInAccount(id, http, await antiforgeryTokenAsync(http, cancellationToken));
     }
 
-    public async Task<HttpResponseMessage> SendAsync(HttpMethod method, string path, CancellationToken cancellationToken)
+    /// <summary>
+    /// The first administrator, created the way a deployment does it: listed for the seeder.
+    /// </summary>
+    public static async Task<SignedInAccount> SignInAsAdministratorAsync(WebApplicationFactory<Program> factory, string email, CancellationToken cancellationToken)
     {
-        using var request = new HttpRequestMessage(method, new Uri(path, UriKind.Relative));
+        var id = await RegisterAsync(factory, email, cancellationToken);
+        await factory.Services.GetRequiredService<AdministratorSeeder>().SeedAsync([id], cancellationToken);
+
+        return await SignInAsync(factory, id, email, cancellationToken);
+    }
+
+    public Task<HttpResponseMessage> SendAsync(HttpMethod method, string path, CancellationToken cancellationToken)
+    => SendAsync(method, path, null, cancellationToken);
+
+    public async Task<HttpResponseMessage> SendAsync(HttpMethod method, string path, HttpContent? content, CancellationToken cancellationToken)
+    {
+        using var request = new HttpRequestMessage(method, new Uri(path, UriKind.Relative)) { Content = content };
         request.Headers.Add(antiforgery_header, antiforgeryToken);
 
         return await Http.SendAsync(request, cancellationToken);
