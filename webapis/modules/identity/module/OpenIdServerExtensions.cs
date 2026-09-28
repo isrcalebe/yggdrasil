@@ -22,10 +22,16 @@ internal static class OpenIdServerExtensions
                     options
                         .AllowAuthorizationCodeFlow()
                         .RequireProofKeyForCodeExchange()
+                        .AllowRefreshTokenFlow()
                         .SetAuthorizationEndpointUris("connect/authorize")
                         .SetTokenEndpointUris("connect/token");
 
-                    options.RegisterScopes(Scopes.OpenId, Scopes.Email);
+                    options.RegisterScopes(Scopes.OpenId, Scopes.Email, Scopes.OfflineAccess);
+
+                    // Refresh tokens rotate on every use (OpenIddict's default). By default a redeemed one still works for
+                    // 30 more seconds, to forgive a retried request; with no leeway, a replay is rejected right away and
+                    // revokes the tokens issued from it, since it means the token leaked.
+                    options.SetRefreshTokenReuseLeeway(TimeSpan.Zero);
 
                     options
                         .AddEphemeralEncryptionKey()
