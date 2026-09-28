@@ -43,7 +43,7 @@ public sealed class GameStorageTests(IntegrationFactory factory) : IntegrationTe
         context.Games.Add(new Game("my-game", "My Game", "my-game", "my-game.server", created_at));
         await context.SaveChangesAsync(CancellationToken);
 
-        context.Games.Add(new Game("my-game", "Another Game", "my-game", "my-game.server", created_at));
+        context.Games.Add(new Game("my-game", "Another Game", "another-game", "another-game.server", created_at));
         var exception = await Assert.ThrowsAsync<DbUpdateException>(() => context.SaveChangesAsync(CancellationToken));
 
         Assert.True(exception.IsUniqueViolation);

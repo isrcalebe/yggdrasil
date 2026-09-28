@@ -23,7 +23,7 @@ public sealed class CreateGameClientsCommandHandler(IOpenIddictApplicationManage
         if (await applications.FindByClientIdAsync(clientId, cancellationToken) is not null
             || await applications.FindByClientIdAsync(serverClientId, cancellationToken) is not null)
         {
-            return Error.Conflict("idenity.game_clients_exist", "OAuth clients already exist for this game.");
+            return Error.Conflict("identity.game_clients_exist", "OAuth clients already exist for this game.");
         }
 
         await applications.CreateAsync(new OpenIddictApplicationDescriptor
