@@ -25,33 +25,33 @@ public static class AuthorizeEndpoint
             => self
                 .MapMethods("/connect/authorize", [HttpMethods.Get, HttpMethods.Post], authorizeAsync)
                 .ExcludeFromDescription();
+    }
 
-        private static async Task<IResult> authorizeAsync(HttpContext context, UserManager<Account> userManager)
+    private static async Task<IResult> authorizeAsync(HttpContext context, UserManager<Account> userManager)
+    {
+        var request = context.GetOpenIddictServerRequest()
+            ?? throw new InvalidOperationException("The OpenID Connect request cannot be retrieved.");
+
+        var session = await context.AuthenticateAsync(IdentityConstants.ApplicationScheme);
+        var account = session.Succeeded
+            ? await userManager.GetUserAsync(session.Principal)
+            : null;
+
+        if (account is null)
         {
-            var request = context.GetOpenIddictServerRequest()
-                ?? throw new InvalidOperationException("The OpenID Connect request cannot be retrieved.");
+            var returnUrl = context.Request.PathBase + context.Request.Path + context.Request.QueryString;
 
-            var session = await context.AuthenticateAsync(IdentityConstants.ApplicationScheme);
-            var account = session.Succeeded
-                ? await userManager.GetUserAsync(session.Principal)
-                : null;
-
-            if (account is null)
-            {
-                var returnUrl = context.Request.PathBase + context.Request.Path + context.Request.QueryString;
-
-                return TypedResults.Redirect($"/login?returnUrl={Uri.EscapeDataString(returnUrl)}");
-            }
-
-            var identity = new ClaimsIdentity(TokenValidationParameters.DefaultAuthenticationType, Claims.Name, Claims.Role)
-                .SetClaim(Claims.Subject, account.Id.ToString())
-                .SetClaim(Claims.Email, account.Email);
-
-            identity.SetScopes(request.GetScopes());
-            identity.SetDestinations(destinationsOf);
-
-            return TypedResults.SignIn(new ClaimsPrincipal(identity), authenticationScheme: OpenIddictServerAspNetCoreDefaults.AuthenticationScheme);
+            return TypedResults.Redirect($"/login?returnUrl={Uri.EscapeDataString(returnUrl)}");
         }
+
+        var identity = new ClaimsIdentity(TokenValidationParameters.DefaultAuthenticationType, Claims.Name, Claims.Role)
+            .SetClaim(Claims.Subject, account.Id.ToString())
+            .SetClaim(Claims.Email, account.Email);
+
+        identity.SetScopes(request.GetScopes());
+        identity.SetDestinations(destinationsOf);
+
+        return TypedResults.SignIn(new ClaimsPrincipal(identity), authenticationScheme: OpenIddictServerAspNetCoreDefaults.AuthenticationScheme);
     }
 
     private static IEnumerable<string> destinationsOf(Claim claim)
