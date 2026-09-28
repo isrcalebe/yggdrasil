@@ -56,6 +56,7 @@ public static class ModuleExtensions
                     .WithApiVersionSet(versionSet);
 
                 module.MapEndpoints(group);
+                module.MapRootEndpoints(self);
             }
 
             return self;
