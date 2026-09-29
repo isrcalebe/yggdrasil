@@ -47,6 +47,11 @@ internal static class OpenIdServerExtensions
                         .UseAspNetCore()
                         .EnableAuthorizationEndpointPassthrough()
                         .EnableTokenEndpointPassthrough();
+                })
+                .AddValidation(static options =>
+                {
+                    options.UseLocalServer();
+                    options.UseAspNetCore();
                 });
 
             self.AddOptions<OpenIddictServerAspNetCoreOptions>()
