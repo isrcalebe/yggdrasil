@@ -3,6 +3,7 @@ using System.Security.Cryptography;
 using Mediator;
 using OpenIddict.Abstractions;
 using yggdrasil.Core.Results;
+using yggdrasil.Modules.Identity.Contracts;
 using yggdrasil.Modules.Identity.Contracts.v1.Clients;
 using static OpenIddict.Abstractions.OpenIddictConstants;
 
@@ -42,6 +43,7 @@ public sealed class CreateGameClientsCommandHandler(IOpenIddictApplicationManage
                 Permissions.GrantTypes.RefreshToken,
                 Permissions.ResponseTypes.Code,
                 Permissions.Scopes.Email,
+                Permissions.Prefixes.Scope + IdentityScopes.PROFILES_READ
             },
             Requirements = { Requirements.Features.ProofKeyForCodeExchange },
         }, cancellationToken);

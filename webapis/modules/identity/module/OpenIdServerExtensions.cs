@@ -1,6 +1,7 @@
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using OpenIddict.Server.AspNetCore;
+using yggdrasil.Modules.Identity.Contracts;
 using yggdrasil.Modules.Identity.Data;
 using static OpenIddict.Abstractions.OpenIddictConstants;
 
@@ -27,7 +28,7 @@ internal static class OpenIdServerExtensions
                         .SetAuthorizationEndpointUris("connect/authorize")
                         .SetTokenEndpointUris("connect/token");
 
-                    options.RegisterScopes(Scopes.OpenId, Scopes.Email, Scopes.OfflineAccess);
+                    options.RegisterScopes(Scopes.OpenId, Scopes.Email, Scopes.OfflineAccess, IdentityScopes.PROFILES_READ);
 
                     // Refresh tokens rotate on every use (OpenIddict's default). By default a redeemed one still works for
                     // 30 more seconds, to forgive a retried request; with no leeway, a replay is rejected right away and
