@@ -1,0 +1,10 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+  <ItemGroup Label="Framework References">
+    <FrameworkReference Include="Microsoft.AspNetCore.App" />
+  </ItemGroup>
+  <ItemGroup Label="Project References">
+    <ProjectReference Include="..\..\..\buildingblocks\persistence\yggdrasil.Persistence.csproj" />
+    <ProjectReference Include="..\..\..\buildingblocks\web\yggdrasil.Web.csproj" />
+    <ProjectReference Include="..\contracts\yggdrasil.Modules.Profiles.Contracts.csproj" />
+  </ItemGroup>
+</Project>
