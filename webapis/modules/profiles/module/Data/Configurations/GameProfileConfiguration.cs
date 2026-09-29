@@ -25,10 +25,6 @@ public sealed class GameProfileConfiguration : IEntityTypeConfiguration<GameProf
             .HasColumnType("jsonb");
 
         builder
-            .Property(static profile => profile.Data)
-            .HasColumnType("jsonb");
-
-        builder
             .Property(static profile => profile.DataVersion)
             .IsConcurrencyToken();
     }
