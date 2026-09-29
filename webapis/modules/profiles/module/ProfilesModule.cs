@@ -1,6 +1,7 @@
 using Microsoft.AspNetCore.Routing;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using yggdrasil.Modules.Profiles.Data;
 using yggdrasil.Persistence;
 using yggdrasil.Web.Modules;
 
@@ -13,8 +14,7 @@ public sealed class ProfilesModule : IModule
     public string Name => NAME;
 
     public void ConfigureServices(IServiceCollection services, IConfiguration configuration)
-    {
-    }
+        => services.AddModuleDbContext<ProfilesModuleDbContext>();
 
     public void MapEndpoints(IEndpointRouteBuilder endpoints)
     {
