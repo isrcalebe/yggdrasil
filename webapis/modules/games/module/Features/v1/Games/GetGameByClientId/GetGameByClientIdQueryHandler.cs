@@ -15,7 +15,7 @@ public sealed class GetGameByClientIdQueryHandler(GamesModuleDbContext context)
 
         var game = await context.Games
             .AsNoTracking()
-            .Where(game => game.ClientId == query.ClientId)
+            .Where(game => game.ClientId == query.ClientId || game.ServerClientId == query.ClientId)
             .Select(static game => new GameResponse(game.Id, game.Slug, game.Name))
             .SingleOrDefaultAsync(cancellationToken);
 
