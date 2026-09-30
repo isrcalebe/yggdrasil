@@ -23,6 +23,11 @@ public enum ErrorType
     /// The caller is authenticated but not allowed to perform the operation.
     /// </summary>
     Forbidden,
+
+    /// <summary>
+    /// The request was based on a version of the resource that is no longer current (optimistic concurrency).
+    /// </summary>
+    PreconditionFailed
 }
 
 /// <summary>An expected error. <see cref="Code"/> is stable and meant for clients, e.g. <c>notes.not_found</c>.</summary>
@@ -39,4 +44,6 @@ public sealed record Error(string Code, string Description, ErrorType Type)
     public static Error Unauthorized(string code, string description) => new(code, description, ErrorType.Unauthorized);
 
     public static Error Forbidden(string code, string description) => new(code, description, ErrorType.Forbidden);
+
+    public static Error PreconditionFailed(string code, string description) => new(code, description, ErrorType.PreconditionFailed);
 }
