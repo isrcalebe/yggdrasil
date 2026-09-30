@@ -12,7 +12,7 @@ public sealed class ReplaceProfileDataCommandValidator : AbstractValidator<Repla
     {
         RuleFor(static command => command.Data)
             .Must(static data => data.ValueKind == JsonValueKind.Object)
-            .WithMessage("Profile data msut be a JSON object.")
+            .WithMessage("Profile data must be a JSON object.")
             .Must(static data => Encoding.UTF8.GetByteCount(data.GetRawText()) <= GameProfile.DATA_MAX_BYTES)
             .WithMessage($"Profile data must not exceed {GameProfile.DATA_MAX_BYTES / 1024} KiB");
     }
