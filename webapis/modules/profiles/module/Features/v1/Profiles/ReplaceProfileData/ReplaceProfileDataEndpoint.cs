@@ -1,3 +1,4 @@
+using System.Security.Claims;
 using System.Text.Json;
 using Mediator;
 using Microsoft.AspNetCore.Builder;
@@ -17,9 +18,12 @@ public static class ReplaceProfileDataEndpoint
     {
         internal RouteHandlerBuilder MapReplaceProfileDataEndpoint()
             => self
-                .MapPut("/{profileId:guid}/data", static async (Guid profileId, JsonElement data, HttpContext httpContext, IMediator mediator, CancellationToken cancellationToken) =>
+                .MapPut("/{profileId:guid}/data", static async (Guid profileId, JsonElement data, HttpContext httpContext, IMediator mediator, ClaimsPrincipal user, CancellationToken cancellationToken) =>
                 {
                     var ifMatch = httpContext.Request.GetTypedHeaders().IfMatch;
+
+                    if (user.ClientId is not { } clientId)
+                        return Results.Forbid();
 
                     // No If-Match, no write: a blind replace could erase progress another write just saved.
                     if (ifMatch.Count == 0)
@@ -31,7 +35,7 @@ public static class ReplaceProfileDataEndpoint
                     if (!DataVersionETag.TryParse(ifMatch, out var expectedDataVersion))
                         return Error.PreconditionFailed("profiles.invalid_if_match", "If-Match must be the ETag of the profile.").ToProblem();
 
-                    var result = await mediator.Send(new ReplaceProfileDataCommand(profileId, expectedDataVersion, data), cancellationToken);
+                    var result = await mediator.Send(new ReplaceProfileDataCommand(profileId, clientId, expectedDataVersion, data), cancellationToken);
 
                     return result.ToHttpResult(response =>
                     {
