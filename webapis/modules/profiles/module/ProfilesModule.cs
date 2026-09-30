@@ -2,6 +2,7 @@ using Microsoft.AspNetCore.Routing;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using yggdrasil.Modules.Profiles.Data;
+using yggdrasil.Modules.Profiles.Features.v1.Profiles.GetCurrentProfile;
 using yggdrasil.Persistence;
 using yggdrasil.Web.Modules;
 
@@ -18,5 +19,6 @@ public sealed class ProfilesModule : IModule
 
     public void MapEndpoints(IEndpointRouteBuilder endpoints)
     {
+        endpoints.MapGetCurrentProfileEndpoint();
     }
 }

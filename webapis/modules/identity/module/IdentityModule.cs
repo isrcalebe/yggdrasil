@@ -5,6 +5,8 @@ using Microsoft.AspNetCore.Routing;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using OpenIddict.Abstractions;
+using OpenIddict.Validation.AspNetCore;
 using yggdrasil.Modules.Identity.Administration;
 using yggdrasil.Modules.Identity.Contracts;
 using yggdrasil.Modules.Identity.Data;
@@ -50,7 +52,12 @@ public sealed class IdentityModule : IModule
 
         services
             .AddAuthorizationBuilder()
-            .AddPolicy(IdentityPolicies.ADMIN, static policy => policy.RequireRole(Roles.ADMIN));
+            .AddPolicy(IdentityPolicies.ADMIN, static policy => policy.RequireRole(Roles.ADMIN))
+            .AddPolicy(IdentityPolicies.PROFILES_READ, static policy => policy
+                .AddAuthenticationSchemes(OpenIddictValidationAspNetCoreDefaults.AuthenticationScheme)
+                .RequireAuthenticatedUser()
+                .RequireAssertion(static context => context.User.HasScope(IdentityScopes.PROFILES_READ))
+            );
 
         services.AddOpenIdServer();
 
