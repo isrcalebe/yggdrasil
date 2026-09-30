@@ -19,7 +19,7 @@ namespace yggdrasil.Integration.Tests.Modules.Identity;
 /// <summary>
 /// Plays the part of a game doing "Login with Yggdrasil ID": a public native client with PKCE and a loopback redirect.
 /// </summary>
-internal sealed class GameClient(IntegrationFactory factory) : IDisposable
+internal sealed class GameClient(IntegrationFactory factory, string clientId = GameClient.CLIENT_ID) : IDisposable
 {
     public const string CLIENT_ID = "test-game";
 
@@ -43,7 +43,7 @@ internal sealed class GameClient(IntegrationFactory factory) : IDisposable
 
         await applications.CreateAsync(new OpenIddictApplicationDescriptor
         {
-            ClientId = CLIENT_ID,
+            ClientId = clientId,
             ApplicationType = ApplicationTypes.Native,
             ClientType = ClientTypes.Public,
             ConsentType = ConsentTypes.Implicit,
@@ -61,11 +61,25 @@ internal sealed class GameClient(IntegrationFactory factory) : IDisposable
         }, cancellationToken);
     }
 
+    /// <summary>
+    /// Registers the player's account, then signs in on the website.
+    /// </summary>
     public async Task SignInAsync(CancellationToken cancellationToken)
     {
-        using var registered = await Http.PostAsJsonAsync(new Uri("/api/v1/identity/accounts", UriKind.Relative), new RegisterAccountCommand(EMAIL, PASSWORD), cancellationToken);
+        using var registered = await Http.PostAsJsonAsync(
+            new Uri("/api/v1/identity/accounts", UriKind.Relative),
+            new RegisterAccountCommand(EMAIL, PASSWORD), cancellationToken);
+
         registered.EnsureSuccessStatusCode();
 
+        await SignInExistingAsync(cancellationToken);
+    }
+
+    /// <summary>
+    /// Signs in with an account registered before, e.g. the same player opening a second game.
+    /// </summary>
+    public async Task SignInExistingAsync(CancellationToken cancellationToken)
+    {
         var antiforgery = await Http.GetFromJsonAsync<AntiforgeryTokenResponse>(new Uri("/api/v1/identity/antiforgery", UriKind.Relative), cancellationToken);
 
         using var request = new HttpRequestMessage(HttpMethod.Post, new Uri("/api/v1/identity/sessions", UriKind.Relative))
@@ -83,7 +97,7 @@ internal sealed class GameClient(IntegrationFactory factory) : IDisposable
     {
         var (verifier, challenge) = Pkce();
 
-        using var authorize = await Http.GetAsync(AuthorizeUri(challenge, scope), cancellationToken);
+        using var authorize = await Http.GetAsync(AuthorizeUri(challenge, scope, clientId), cancellationToken);
         Assert.Equal(HttpStatusCode.Redirect, authorize.StatusCode);
 
         using var token = await PostTokenAsync(new Dictionary<string, string>
@@ -107,14 +121,14 @@ internal sealed class GameClient(IntegrationFactory factory) : IDisposable
 
     public Task<HttpResponseMessage> PostTokenAsync(Dictionary<string, string> parameters, CancellationToken cancellationToken)
     {
-        parameters[Parameters.ClientId] = CLIENT_ID;
+        parameters[Parameters.ClientId] = clientId;
 
         return Http.PostAsync(new Uri("/connect/token", UriKind.Relative), new FormUrlEncodedContent(parameters), cancellationToken);
     }
 
-    public static Uri AuthorizeUri(string challenge, string scope = "openid email")
+    public static Uri AuthorizeUri(string challenge, string scope = "openid email", string clientId = CLIENT_ID)
         => new(
-            $"/connect/authorize?client_id={CLIENT_ID}&redirect_uri={Uri.EscapeDataString(REDIRECT_URI)}&response_type=code"
+            $"/connect/authorize?client_id={clientId}&redirect_uri={Uri.EscapeDataString(REDIRECT_URI)}&response_type=code"
             + $"&scope={Uri.EscapeDataString(scope)}&code_challenge={challenge}&code_challenge_method=S256&state=xyz",
             UriKind.Relative);
 
