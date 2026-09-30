@@ -1,6 +1,6 @@
 using System.Security.Claims;
 
-namespace yggdrasil.Modules.Identity.Contracts.v1;
+namespace yggdrasil.Modules.Identity.Contracts;
 
 /// <summary>
 /// What other modules read from an access token, without depending on how identity issues it.
