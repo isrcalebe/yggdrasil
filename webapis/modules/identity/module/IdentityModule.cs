@@ -1,4 +1,5 @@
 using Microsoft.AspNetCore.Authentication.Cookies;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Routing;
@@ -53,11 +54,8 @@ public sealed class IdentityModule : IModule
         services
             .AddAuthorizationBuilder()
             .AddPolicy(IdentityPolicies.ADMIN, static policy => policy.RequireRole(Roles.ADMIN))
-            .AddPolicy(IdentityPolicies.PROFILES_READ, static policy => policy
-                .AddAuthenticationSchemes(OpenIddictValidationAspNetCoreDefaults.AuthenticationScheme)
-                .RequireAuthenticatedUser()
-                .RequireAssertion(static context => context.User.HasScope(IdentityScopes.PROFILES_READ))
-            );
+            .AddPolicy(IdentityPolicies.PROFILES_READ, scopePolicy(IdentityScopes.PROFILES_READ))
+            .AddPolicy(IdentityPolicies.PROFILES_WRITE, scopePolicy(IdentityScopes.PROFILES_WRITE));
 
         services.AddOpenIdServer();
 
@@ -104,4 +102,13 @@ public sealed class IdentityModule : IModule
         endpoints.MapAuthorizeEndpoint();
         endpoints.MapTokenEndpoint();
     }
+
+    /// <summary>
+    /// Bearer tokens only: a browser session cookie never grants API scopes.
+    /// </summary>
+    private static Action<AuthorizationPolicyBuilder> scopePolicy(string scope)
+        => policy => policy
+            .AddAuthenticationSchemes(OpenIddictValidationAspNetCoreDefaults.AuthenticationScheme)
+            .RequireAuthenticatedUser()
+            .RequireAssertion(context => context.User.HasScope(scope));
 }

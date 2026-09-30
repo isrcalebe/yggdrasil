@@ -28,7 +28,7 @@ internal static class OpenIdServerExtensions
                         .SetAuthorizationEndpointUris("connect/authorize")
                         .SetTokenEndpointUris("connect/token");
 
-                    options.RegisterScopes(Scopes.OpenId, Scopes.Email, Scopes.OfflineAccess, IdentityScopes.PROFILES_READ);
+                    options.RegisterScopes(Scopes.OpenId, Scopes.Email, Scopes.OfflineAccess, IdentityScopes.PROFILES_READ, IdentityScopes.PROFILES_WRITE);
 
                     // Refresh tokens rotate on every use (OpenIddict's default). By default a redeemed one still works for
                     // 30 more seconds, to forgive a retried request; with no leeway, a replay is rejected right away and
