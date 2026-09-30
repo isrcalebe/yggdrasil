@@ -13,6 +13,8 @@ public sealed class GameProfile
     /// </summary>
     public const string EMPTY_DATA = "{}";
 
+    public const int DATA_MAX_BYTES = 64 * 1024;
+
     public Guid Id { get; private init; } = Guid.CreateVersion7();
 
     public Guid AccountId { get; private init; }
