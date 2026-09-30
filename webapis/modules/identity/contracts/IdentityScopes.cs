@@ -10,4 +10,9 @@ public static class IdentityScopes
     /// A game reads the signed-in player's profile.
     /// </summary>
     public const string PROFILES_READ = "profiles.read";
+
+    /// <summary>
+    /// A game server replaces the data of its players' profiles (client credentials only: players never write).
+    /// </summary>
+    public const string PROFILES_WRITE = "profiles.write";
 }

@@ -59,7 +59,8 @@ public sealed class CreateGameClientsCommandHandler(IOpenIddictApplicationManage
             Permissions =
             {
                 Permissions.Endpoints.Token,
-                Permissions.GrantTypes.ClientCredentials
+                Permissions.GrantTypes.ClientCredentials,
+                Permissions.Prefixes.Scope + IdentityScopes.PROFILES_WRITE
             },
         }, cancellationToken);
 

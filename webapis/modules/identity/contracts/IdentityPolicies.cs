@@ -14,4 +14,9 @@ public static class IdentityPolicies
     /// A valid access token (<c>Authorization: Bearer</c>) carrying the <see cref="IdentityScopes.PROFILES_READ"/> scope.
     /// </summary>
     public const string PROFILES_READ = "identity.scope.profiles.read";
+
+    /// <summary>
+    /// A valid access token (<c>Authorization: Bearer</c>) carrying the <see cref="IdentityScopes.PROFILES_WRITE"/> scope.
+    /// </summary>
+    public const string PROFILES_WRITE = "identity.scope.profiles.write";
 }
